@@ -34,27 +34,31 @@ Seu trabalho é implementar as funções print_words() e depois print_top().
 
 import sys
 
+from typing import List
+
+
+def read_all_words_in_the_file(file_name: str, delimiter: str = ' ') -> List[str]:
+    words = []
+    with open(file_name) as file:
+        for line in file.readlines():
+            for w in line.split(delimiter):
+                words.append(w.lower())
+    return words
+
 
 # SEU CÓDIGO AQUI...
 def print_words(file_name):
-    TYPE_OPERARION_READ = 'r'
-    DELIMITER = ' '
-    words = []
-    # Get all words
-    with open(file_name, TYPE_OPERARION_READ) as file:
-        for line in file.readlines():
-            for word in line.split(DELIMITER):
-                words.append(word.lower())
+    words = read_all_words_in_the_file(file_name)
     # Search count of each word
     words_count = []
-    for word in words:
+    for w in words:
         find_word = False
         for item in words_count:
-            if item.get('word') == word:
+            if item.get('word') == w:
                 item['count'] += 1
                 find_word = True
         if not find_word:
-            words_count.append({'word': word, 'count': 1})
+            words_count.append({'word': w, 'count': 1})
     # sort words by word
     def sort_words_by(e):
         return e.get('word')
@@ -64,15 +68,8 @@ def print_words(file_name):
 
 
 def print_top(file_name):
-    TYPE_OPERARION_READ = 'r'
-    DELIMITER = ' '
     TOP_MAX = 20
-    words = []
-    # Get all words
-    with open(file_name, TYPE_OPERARION_READ) as file:
-        for line in file.readlines():
-            for word in line.split(DELIMITER):
-                words.append(word.lower())
+    words = read_all_words_in_the_file(file_name)
     # Search count of each word
     words_count = []
     for word in words:
