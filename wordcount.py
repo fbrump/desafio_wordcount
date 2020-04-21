@@ -34,22 +34,19 @@ Seu trabalho é implementar as funções print_words() e depois print_top().
 
 import sys
 
-from typing import List
+from typing import List, Dict
 
 
-def read_all_words_in_the_file(file_name: str, delimiter: str = ' ') -> List[str]:
+def read_all_words_in_the_file(file_name: str, separator: str = ' ') -> List[str]:
     words = []
     with open(file_name) as file:
         for line in file.readlines():
-            for w in line.split(delimiter):
+            for w in line.split(separator):
                 words.append(w.lower())
     return words
 
 
-# SEU CÓDIGO AQUI...
-def print_words(file_name):
-    words = read_all_words_in_the_file(file_name)
-    # Search count of each word
+def count_how_many_words_exists(words:List[str]) -> List[str]:
     words_count = []
     for w in words:
         find_word = False
@@ -59,31 +56,31 @@ def print_words(file_name):
                 find_word = True
         if not find_word:
             words_count.append({'word': w, 'count': 1})
-    # sort words by word
-    def sort_words_by(e):
-        return e.get('word')
-    words_count.sort(key=sort_words_by)
+    return words_count
+
+
+def sort_words_by(words_count:List[Dict[str, int]], field:str, reverse:bool=False) -> None:
+    def sort_words_by_key(e):
+        return e.get(field)
+    words_count.sort(key=sort_words_by_key, reverse=reverse)
+
+
+# SEU CÓDIGO AQUI...
+def print_words(file_name):
+    SORT_BY_WORD_KEY = 'word'
+    words = read_all_words_in_the_file(file_name)
+    words_count = count_how_many_words_exists(words)
+    sort_words_by(words_count, SORT_BY_WORD_KEY)
     for word_count in words_count:
         print(f"{word_count.get('word')} {word_count.get('count')}")
 
 
 def print_top(file_name):
     TOP_MAX = 20
+    SORT_BY_COUNT_KEY = 'count'
     words = read_all_words_in_the_file(file_name)
-    # Search count of each word
-    words_count = []
-    for word in words:
-        find_word = False
-        for item in words_count:
-            if item.get('word') == word:
-                item['count'] += 1
-                find_word = True
-        if not find_word:
-            words_count.append({'word': word, 'count': 1})
-    # sort words by word
-    def sort_words_by(e):
-        return e.get('count')
-    words_count.sort(reverse=True, key=sort_words_by)
+    words_count = count_how_many_words_exists(words)
+    sort_words_by(words_count, SORT_BY_COUNT_KEY, reverse=True)
     for word_count in words_count[0:TOP_MAX]:
         print(f"{word_count.get('word')} {word_count.get('count')}")
 
